@@ -16,7 +16,7 @@ LangGraph's checkpoint tables.
 
 | View | What it shows |
 |---|---|
-| Book a trip | A form; the selected trip's status, preferences used, understood request, the itinerary card with approve, change and reject, the bookings, and a live trace of every node |
+| Book a trip | A form with three example travellers to start from (any name works: it is kept as a lower-case id, and a new traveller starts with no memories); the selected trip's status, preferences used, understood request, the itinerary card with approve, change and reject, the bookings, and a live trace of every node |
 | 1. Reference architecture | Six tiers, fifteen components with icons and technologies, nineteen typed data flows; select a component to read its role; simulate a run (plan and book, a provider fails, crash and resume) step by step, with the current step shown above the diagram |
 | 2. The compiled graph | The components with a live status, and the compiled graph with the selected trip's path lit |
 | 3. Traveller memory | Recall by meaning, remember a statement, forget a traveller |
