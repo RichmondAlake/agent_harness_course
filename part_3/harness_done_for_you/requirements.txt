@@ -1,0 +1,21 @@
+# Environment for the notebook, the MCP gateway and the offline tests.
+# Tested with Python 3.12 on macOS (Apple silicon).
+
+# MemoRizz: the harness. The extras add the Anthropic adapter, the file system
+# provider's vector index and the MCP client (version 2 of the MCP Python SDK).
+memorizz[anthropic,filesystem,mcp]>=0.17.25
+
+# The MCP gateway that serves the practice workspace.
+uvicorn>=0.30
+starlette>=0.37
+
+# Keys from a .env file.
+python-dotenv>=1.0
+
+# Run the notebook and keep its outputs.
+ipykernel>=6.29
+nbclient>=0.10
+nbformat>=5.10
+
+# Offline tests.
+pytest>=8.0

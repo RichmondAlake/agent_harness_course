@@ -1,0 +1,22 @@
+# PPA custom-harness appbook. Python 3.11 or newer.
+fastapi>=0.115
+uvicorn>=0.30
+sse-starlette>=2.1
+httpx>=0.27
+pydantic>=2.7
+anthropic>=1.0
+langchain-anthropic>=1.7
+langchain-core>=1.2
+langgraph>=1.0,<2
+langgraph-checkpoint-sqlite>=3.0
+aiosqlite>=0.20
+langchain-mcp-adapters>=0.3
+mcp>=1.20
+tavily-python>=0.7
+pytest>=8.0
+oracledb>=2.4                # the appbook's store on Oracle AI Database, and the read-only window
+langgraph-oracledb>=1.0      # LangGraph checkpoints in Oracle AI Database
+
+# Only for your own accounts, which no lesson needs:
+#   icalendar recurring-ical-events requests          a secret iCal address, Notion
+#   google-api-python-client google-auth-oauthlib     Google Calendar

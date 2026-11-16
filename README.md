@@ -6,12 +6,14 @@ It turns the workshop's memory-first architecture into runnable code, narrated
 notebooks, interactive appbooks, staged exercises, and a production-oriented
 deployment path.
 
-The course has two parts, and each builds one assistant.
+The course has three parts. The first two each build one assistant, and the
+third makes the second one measure itself and improve.
 
 | Part | Assistant | What the harness has to handle |
 |---|---|---|
 | [Part 1](part_1/) | **ERPA**, a retail-planning assistant | Curated evidence in one database. Nothing it does reaches another person |
 | [Part 2](part_2/) | **PPA**, a personal productivity assistant | Mail written by strangers, a calendar, timers that outlive a request, and actions taken in your name |
+| [Part 3](part_3/) | **PPA**, rebuilt for teaching, that improves | Everything in Part 2, plus a cached prompt with a bill for every turn, a record of every turn, skills the assistant learns from turns you approved, and a scorecard |
 
 ## Part 1: ERPA
 
@@ -123,8 +125,39 @@ Begin with the [Part 2 guide](part_2/README.md). The advanced track has its own
 [guide](part_2/advanced/README.md), two more appbooks on ports 8040 and 8041, and a
 survey paper the deep-research harness wrote, in `part_2/advanced/deep_research/samples/`.
 
+## Part 3: PPA that improves
+
+**PPA is a personal productivity assistant.** It works for the owner of one
+mailbox: it reads mail and the calendar, turns requests into tasks, plans the
+day into free time, runs focus timers, briefs you before you ask, and sends or
+books only with your approval. [`part_3/README.md`](part_3/README.md) explains
+it in full.
+
+Part 3 is the Part 2 custom harness rewritten to be taught from, with four
+additions.
+
+| Addition | What it does |
+|---|---|
+| Prompt caching, with a bill | The stable start of the prompt is cached, and every model call is priced and stored |
+| The turn record | One row per turn: the request, the plan, the tools that ran, the outcome, and the owner's words when declining |
+| Learning from its own traces | Work the owner approved twice becomes a skill. A gate of five checks decides whether it goes live, a correction revises it, and a pointer rolls it back |
+| A scorecard | The harness's claims as checks with pass marks, and a READY or BLOCKED verdict |
+
+| Path | What it is |
+|---|---|
+| [Notebook](part_3/custom_harness/notebook/) | The harness built one layer at a time on Oracle AI Database 26ai, Oracle Agent Memory, LangGraph, Claude and a System One model |
+| [Appbook](part_3/custom_harness/appbook/) | The same assistant as a running application on port 8050, with a chapter for each building block |
+| [Harness done for you](part_3/harness_done_for_you/) | The same assistant on MemoRizz 0.17.25, with a table of what a packaged harness gives you and what you still build |
+
+```bash
+cd part_3/custom_harness/appbook
+./run.sh                        # http://127.0.0.1:8050, no keys needed
+```
+
 ## Repository guide
 
+- [`part_3/README.md`](part_3/README.md) explains what PPA is, what a harness is,
+  and what Part 3 adds to the custom harness.
 - [`part_2/README.md`](part_2/README.md) explains the three Part 2 tracks, the
   practice workspace, the two models and the keys.
 - [`part_2/_shared/`](part_2/_shared/) holds the practice data, the rules that

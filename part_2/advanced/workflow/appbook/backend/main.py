@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -21,7 +22,7 @@ load_env()
 from fastapi import FastAPI, HTTPException  # noqa: E402
 from fastapi.responses import JSONResponse  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
-from pydantic import BaseModel, Field  # noqa: E402
+from pydantic import BaseModel, Field, field_validator  # noqa: E402
 from sse_starlette.sse import EventSourceResponse  # noqa: E402
 
 from shared import oracle  # noqa: E402
@@ -89,9 +90,30 @@ def _run(trip_id: str, work) -> None:
     threading.Thread(target=body, name=f"trip-{trip_id}", daemon=True).start()
 
 
+def traveller_slug(value: str) -> str:
+    """A traveller id as the tables and the memory store key it: lower case, no spaces. 'Richmond Alake' -> 'richmond-alake'."""
+    slug = re.sub(r"[^a-z0-9\-_.]+", "-", (value or "").strip().lower()).strip("-.")[:40]
+    if not slug:
+        raise ValueError("a traveller id is needed")
+    return slug
+
+
 class TripReq(BaseModel):
     text: str = Field(min_length=5, max_length=2000)
-    traveller_id: str = Field(default="richmond", pattern=r"^[a-z0-9\-_.]{1,40}$")
+    traveller_id: str = Field(default="richmond", max_length=120)
+
+    @field_validator("text")
+    @classmethod
+    def _trim(cls, value: str) -> str:
+        value = value.strip()
+        if len(value) < 5:
+            raise ValueError("say what the traveller wants")
+        return value
+
+    @field_validator("traveller_id")
+    @classmethod
+    def _slug(cls, value: str) -> str:
+        return traveller_slug(value)
 
 
 class DecisionReq(BaseModel):
@@ -170,7 +192,7 @@ def start(req: TripReq) -> dict:
     oracle.execute("INSERT INTO trip_requests (trip_id, traveller_id, request, status) VALUES (:1, :2, :3, 'STARTED')",
                    [trip_id, req.traveller_id, req.text])
     _run(trip_id, lambda: graph.start_trip(req.text, req.traveller_id, trip_id=trip_id))
-    return {"trip_id": trip_id, "status": "running"}
+    return {"trip_id": trip_id, "traveller_id": req.traveller_id, "status": "running"}
 
 
 @app.get("/api/system_one/status")
@@ -239,10 +261,18 @@ def faults() -> dict:
     return {"faults": oracle.rows("SELECT fault_id, component, match, fault, remaining FROM trip_provider_faults")}
 
 
+def _traveller(value: str) -> str:
+    try:
+        return traveller_slug(value)
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
+
+
 @app.get("/api/memory/{traveller_id}")
 def memory(traveller_id: str, query: str = "travel preferences") -> dict:
     ready()
     from harness import memory as mem
+    traveller_id = _traveller(traveller_id)
     return {"traveller_id": traveller_id, "recalled": mem.recall(traveller_id, query, limit=12)}
 
 
@@ -250,13 +280,14 @@ def memory(traveller_id: str, query: str = "travel preferences") -> dict:
 def remember(traveller_id: str, req: MemoryReq) -> dict:
     ready()
     from harness import memory as mem
-    return mem.remember(traveller_id, req.content, req.kind)
+    return mem.remember(_traveller(traveller_id), req.content, req.kind)
 
 
 @app.delete("/api/memory/{traveller_id}")
 def forget(traveller_id: str) -> dict:
     ready()
     from harness import memory as mem
+    traveller_id = _traveller(traveller_id)
     mem.forget_traveller(traveller_id)
     return {"forgotten": traveller_id}
 

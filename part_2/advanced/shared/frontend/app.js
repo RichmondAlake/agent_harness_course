@@ -10,6 +10,8 @@ APP.api = async (path, options = {}) => {
   if (!response.ok) {
     let detail = response.statusText;
     try { detail = (await response.json()).detail || detail; } catch (e) {}
+    // a validation error names the field and what was wrong with it
+    if (Array.isArray(detail)) detail = detail.map(d => `${(d.loc || []).filter(x => x !== "body").join(".")}: ${d.msg}`).join("; ");
     throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
   }
   return response.json();
@@ -43,7 +45,9 @@ APP.toast = (title, body = "", tone = "") => {
 };
 APP.busy = async (button, work) => {
   const label = button.innerHTML; button.disabled = true; button.innerHTML = `<span class="loading">Working</span>`;
-  try { return await work(); } finally { if (button.isConnected) { button.disabled = false; button.innerHTML = label; } }
+  try { return await work(); }
+  catch (error) { APP.toast("That did not work", error.message || String(error), "bad"); }
+  finally { if (button.isConnected) { button.disabled = false; button.innerHTML = label; } }
 };
 APP.on = (topic, handler) => { const found = APP.listeners.get(topic) || []; found.push(handler); APP.listeners.set(topic, found); APP.stageCleanups.push(() => APP.listeners.set(topic, (APP.listeners.get(topic) || []).filter(h => h !== handler))); };
 APP.stageCleanups = [];

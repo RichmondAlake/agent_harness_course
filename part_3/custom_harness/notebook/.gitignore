@@ -1,0 +1,3 @@
+# Built by the notebook on each run: the downloaded mailbox, the MCP server file and its state
+ppa_workspace/
+.ipynb_checkpoints/

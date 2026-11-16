@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PPA / Custom Harness Appbook</title>
+  <meta name="description" content="An interactive appbook: a personal productivity assistant, building block by building block." />
+  <link rel="icon" href="data:," />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("ppa-theme");
+        if (!t) t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", t);
+        if (localStorage.getItem("ppa-nav") === "collapsed") document.documentElement.setAttribute("data-nav", "collapsed");
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=4" />
+  <link rel="stylesheet" href="/refarch.css?v=3" />
+</head>
+<body>
+  <button class="menu" id="menu" aria-label="Open chapters">&#9776;</button>
+  <div id="app" class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark">PP</div><div class="brand-copy"><strong>PPA</strong><span>Personal productivity assistant</span></div><button class="nav-collapse" id="nav-collapse" aria-label="Collapse the navigation" aria-expanded="true" title="Collapse the navigation"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      <nav id="chapters" aria-label="Chapters"></nav>
+      <div class="sidebar-foot"><div class="status-chip" id="global-status"><i class="status-dot"></i><span>Warming harness</span></div></div>
+    </aside>
+    <div class="main">
+      <header class="topbar" id="topbar" aria-label="Workspace status"></header>
+      <main class="stage" id="stage" tabindex="-1"></main>
+    </div>
+  </div>
+  <button class="scrim" id="scrim" aria-label="Close menu" hidden></button>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <section class="data-explorer" id="data-explorer" aria-label="Data explorer">
+    <div class="explorer-resizer" id="explorer-resizer" role="separator" aria-orientation="horizontal" aria-label="Resize the data explorer"><i></i></div>
+    <button class="explorer-handle" id="explorer-toggle" aria-expanded="false" aria-controls="explorer-body">
+      <span class="explorer-title"><i class="db-glyph">DB</i><strong>Data explorer</strong><span id="explorer-summary">Every table the harness owns, read-only</span></span>
+      <span class="explorer-live"><i class="status-dot"></i><span id="explorer-live-label">Live view</span></span>
+      <span class="explorer-chevron" aria-hidden="true">&#8963;</span>
+    </button>
+    <div class="explorer-sources" id="explorer-sources" role="tablist" aria-label="Which database to read" hidden>
+      <button role="tab" data-source="sqlite" aria-selected="true"><strong>Appbook store</strong><span>what this appbook runs on</span></button>
+      <button role="tab" data-source="oracle" aria-selected="false"><strong>Oracle AI Database</strong><span id="oracle-summary">what the notebook's harness left there · read-only</span></button>
+    </div>
+    <div class="explorer-body" id="explorer-body" hidden>
+      <aside class="explorer-tables" aria-label="Tables">
+        <div class="explorer-section-head"><span>Tables</span><button id="explorer-refresh" title="Re-read the table list" aria-label="Re-read the table list">&#8635;</button></div>
+        <label class="explorer-search"><span class="sr-only">Filter tables</span><input id="explorer-filter" placeholder="Filter tables" /></label>
+        <div class="table-list" id="explorer-table-list"></div>
+      </aside>
+      <section class="explorer-data" aria-label="Rows">
+        <div class="explorer-toolbar" id="explorer-toolbar"></div>
+        <div class="data-grid-wrap" id="explorer-grid"><div class="empty">Choose a table to read its rows.</div></div>
+      </section>
+      <aside class="explorer-inspector" aria-label="Inspector">
+        <div class="inspector-tabs" role="tablist" id="explorer-tabs"></div>
+        <div class="inspector-body" id="explorer-inspector"></div>
+      </aside>
+    </div>
+    <div class="explorer-body" id="oracle-body" hidden>
+      <aside class="explorer-tables" aria-label="Tables and views in Oracle AI Database">
+        <div class="explorer-section-head"><span>Oracle tables and views</span><button id="oracle-refresh" title="Ask the database again" aria-label="Ask the database again">&#8635;</button></div>
+        <label class="explorer-search"><span class="sr-only">Filter tables</span><input id="oracle-filter" placeholder="Filter tables" /></label>
+        <div class="table-list" id="oracle-table-list"></div>
+      </aside>
+      <section class="explorer-data" aria-label="Rows in Oracle AI Database">
+        <div class="explorer-toolbar" id="oracle-toolbar"></div>
+        <div class="data-grid-wrap" id="oracle-grid"><div class="empty">Choose a table to read its newest rows.</div></div>
+      </section>
+      <aside class="explorer-inspector" aria-label="Inspector">
+        <div class="inspector-tabs"><button class="active">Row</button><span class="live-word">READ-ONLY</span></div>
+        <div class="inspector-body" id="oracle-inspector"></div>
+      </aside>
+    </div>
+  </section>
+  <script src="/app.js?v=4"></script>
+  <script src="/explorer.js?v=3"></script>
+  <script src="/oracle-explorer.js?v=3"></script>
+  <script src="/teaching.js?v=3"></script>
+  <script src="/assistant.js?v=3"></script>
+  <script src="/refarch.js?v=3"></script>
+  <script src="/refarch-spec.js?v=3"></script>
+  <script src="/architecture.js?v=3"></script>
+  <script src="/chapters.js?v=3"></script>
+  <script src="/chapters-runtime.js?v=3"></script>
+  <script src="/system-one.js?v=3"></script>
+  <script src="/chapters-learning.js?v=3"></script>
+  <script>PPA.boot();</script>
+</body>
+</html>

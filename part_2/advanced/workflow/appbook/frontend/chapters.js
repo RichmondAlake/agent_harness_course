@@ -48,14 +48,23 @@ APP.register({
   id: "trip", title: "Book a trip",
   blurb: "One sentence in. The harness recalls the traveller, searches the real web for flights, hotels and cars at the same time, plans an itinerary from what it found, and stops for approval before it books anything.",
   render: async (root) => {
+    // three travellers to start from; any name works, and a new name starts with no memories
+    const EXAMPLES = [
+      { traveller: "richmond", label: "richmond · London → Lisbon: flight, hotel and car", text: "Book me a trip from London to Lisbon, out on 12 October 2026 and back on 15 October 2026. I need a flight, a hotel and a car. Budget £900." },
+      { traveller: "ada-okafor", label: "ada-okafor · Manchester → Barcelona for two, no car", text: "Book a trip for two from Manchester to Barcelona, out on 3 November 2026 and back on 6 November 2026. We need a flight and a hotel near the beach; no car. Budget £700." },
+      { traveller: "sam-lee", label: "sam-lee · Edinburgh → Dublin: a hotel and a small car", text: "Fly me from Edinburgh to Dublin on 20 November 2026, back on 22 November 2026. A hotel near Temple Bar and a small car for the two days. Budget £500." },
+    ];
+    const form = { text: EXAMPLES[0].text, traveller: EXAMPLES[0].traveller };
     const draw = async () => {
       const trips = (await APP.api("/api/trips")).trips; const data = await APP.loadTrip();
       if (!root.isConnected) return;
+      // keep what is being typed across redraws: a running trip redraws this view at every step
+      if ($("#text", root)) { form.text = $("#text", root).value; form.traveller = $("#traveller", root).value; }
       root.innerHTML = `<div class="grid wide-left" style="margin-top:20px"><div>
-        <div class="panel"><div class="panel-head"><h2 class="panel-title">A new trip</h2></div><div class="panel-body">
-          <label for="text">What the traveller wants</label><textarea id="text">Book me a trip from London to Lisbon, out on 12 October 2026 and back on 15 October 2026. I need a flight, a hotel and a car. Budget £900.</textarea>
-          <div class="row" style="margin-top:8px"><label class="inline">Traveller <input id="traveller" value="richmond" style="width:120px" /></label><span class="spacer"></span><button class="primary" id="start">Plan the trip</button></div>
-          <p class="field-help">About a minute: memory recall, one typed call to understand, three Tavily searches in parallel, typed extraction of offers, one typed call to plan.</p></div></div>
+        <div class="panel"><div class="panel-head"><h2 class="panel-title">A new trip</h2><select id="example" style="max-width:360px"><option value="">Start from an example…</option>${EXAMPLES.map((e, i) => `<option value="${i}">${esc(e.label)}</option>`).join("")}</select></div><div class="panel-body">
+          <label for="text">What the traveller wants</label><textarea id="text">${esc(form.text)}</textarea>
+          <div class="row" style="margin-top:8px"><label class="inline">Traveller <input id="traveller" value="${esc(form.traveller)}" placeholder="any name" style="width:180px" /></label><span class="spacer"></span><button class="primary" id="start">Plan the trip</button></div>
+          <p class="field-help">About a minute: memory recall, one typed call to understand, one Tavily search per component wanted, typed extraction of offers, one typed call to plan. Any traveller name works (it is kept as a lower-case id, so "Ada Okafor" is ada-okafor); a new traveller has no memories yet, so the plan follows the request alone. To see memory shape a plan, seed what they prefer in chapter 3 first.</p></div></div>
         ${data ? `<div class="panel" style="margin-top:16px"><div class="panel-head"><h2 class="panel-title">${esc(data.trip_id)}</h2><span class="row">${data.busy ? APP.pill("working", "warn") : APP.pill(data.status, APP.tone(data.status))}${data.error ? APP.pill("error", "bad") : ""}</span></div><div class="panel-body">
             ${data.error ? `<div class="error">${esc(data.error)}</div>` : ""}
             ${data.status === "interrupted" ? `<div class="notice">The run stopped inside <strong>${esc(data.resume_from.join(", "))}</strong> without finishing that step. <button class="secondary small" id="continue">Continue from the last checkpoint</button></div>` : ""}
@@ -67,7 +76,8 @@ APP.register({
         <div class="panel"><div class="panel-head"><h2 class="panel-title">Trips</h2></div><div class="panel-body flush"><div class="table-wrap"><table class="list"><tbody>${trips.map(t => `<tr data-trip="${esc(t.trip_id)}" style="cursor:pointer"><td class="mono">${esc(t.trip_id)}</td><td>${APP.pill(t.busy ? "working" : t.status, t.busy ? "warn" : APP.tone(t.status))}</td></tr>`).join("") || `<tr><td class="faint">No trips yet.</td></tr>`}</tbody></table></div></div></div>
         <div class="panel" style="margin-top:16px"><div class="panel-head"><h2 class="panel-title">Live trace</h2><span class="mono faint" id="trace-count">${(data?.ledger || []).length} steps</span></div><div class="panel-body" id="trace">${traceLines(data?.ledger || [])}</div></div>
         </div></div>`;
-      $("#start").onclick = (ev) => APP.busy(ev.currentTarget, async () => { const r = await APP.post("/api/trips", { text: $("#text").value, traveller_id: $("#traveller").value }); APP.selectTrip(r.trip_id); APP.toast("Trip started", r.trip_id); await draw(); });
+      $("#example", root).onchange = (ev) => { const e = EXAMPLES[Number(ev.target.value)]; if (!e) return; $("#text", root).value = e.text; $("#traveller", root).value = e.traveller; };
+      $("#start").onclick = (ev) => APP.busy(ev.currentTarget, async () => { const r = await APP.post("/api/trips", { text: $("#text").value, traveller_id: $("#traveller").value }); APP.selectTrip(r.trip_id); APP.toast("Trip started", `${r.trip_id} · traveller ${r.traveller_id}`); await draw(); });
       $$("[data-trip]", root).forEach(row => row.onclick = () => { APP.selectTrip(row.dataset.trip); draw(); });
       $$("[data-decide]", root).forEach(b => b.onclick = (ev) => APP.busy(ev.currentTarget, async () => { await APP.post(`/api/trips/${data.trip_id}/decide`, { decision: b.dataset.decide, note: $("#note")?.value || "" }); await draw(); }));
       const cont = $("#continue", root); if (cont) cont.onclick = (ev) => APP.busy(ev.currentTarget, async () => { await APP.post(`/api/trips/${data.trip_id}/continue`); await draw(); });
