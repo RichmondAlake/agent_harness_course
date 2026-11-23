@@ -9,8 +9,7 @@ part_2/advanced/deep_research/appbook/run.sh   # http://127.0.0.1:8041
 ```
 
 Needs Oracle AI Database Free in Docker (`ppa-custom-oracle-26ai`, port 1524),
-`ANTHROPIC_API_KEY` and `TAVILY_API_KEY`. The schema and the embedding model are the same
-as the trip workflow's. Published papers are written to `part_2/advanced/deep_research/output/`.
+`ANTHROPIC_API_KEY` and `TAVILY_API_KEY`. Published papers are written to `part_2/advanced/deep_research/output/`.
 
 | View | What it shows |
 |---|---|
@@ -33,5 +32,5 @@ in the status bar.
 | `ANTHROPIC_MODEL` | `claude-opus-5-5` | The model |
 | `SURVEY_EFFORT` | `medium` | Effort passed to the model |
 | `SURVEY_OUTPUT_DIR` | `deep_research/output` | Where published papers are written |
-| `ADV_ORA_DSN`, `ADV_ORA_USER`, `ADV_ORA_PWD` | as the trip workflow | The database and schema |
+| `ADV_ORA_DSN`, `ADV_ORA_USER`, `ADV_ORA_PWD` | `127.0.0.1:1524/FREEPDB1`, `PPA_ADVANCED`, a local default | The database and schema |
 | `PORT` | `8041` | Where `run.sh` listens |

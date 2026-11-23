@@ -9,7 +9,6 @@ import pytest
 
 ADVANCED = Path(__file__).resolve().parents[1]
 NOTEBOOKS = {
-    "workflow": ADVANCED / "workflow" / "notebook" / "advanced_trip_booking_workflow.ipynb",
     "deep_research": ADVANCED / "deep_research" / "notebook" / "advanced_survey_paper_harness.ipynb",
     "metaharness": ADVANCED / "metaharness" / "notebook" / "advanced_metaharness_memorizz.ipynb",
 }

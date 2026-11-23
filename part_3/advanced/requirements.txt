@@ -1,0 +1,17 @@
+# Part 3 advanced track: the deep-research harness, its notebook and its appbook. Python 3.11 or newer.
+anthropic>=1.9
+tavily-python>=0.8
+oracledb>=4.0.2
+langgraph>=1.2,<2
+langgraph-oracledb==1.0.1
+oracleagentmemory==26.8.0
+requests>=2.32
+fastapi>=0.115
+uvicorn>=0.30
+sse-starlette>=2.1
+pydantic>=2.7
+nbformat>=5.10
+nbclient>=0.10
+ipykernel>=6.29
+jupyterlab>=4.2
+pytest>=8.0
