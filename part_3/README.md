@@ -72,7 +72,34 @@ first appear, every flow has a diagram, and each part ends with takeaways.
 | **Appbook** | The same assistant as a running application, with a chapter that opens up each building block | [`custom_harness/appbook/`](custom_harness/appbook/) |
 | **Harness done for you** | The same assistant on MemoRizz, a packaged harness, ending with a table of what it gives you for free and what you still build | [`harness_done_for_you/`](harness_done_for_you/) |
 
-Nothing here needs a Google, Microsoft or Notion account. Both run on a
+## The advanced track
+
+The three ways in above build one assistant. [`advanced/`](advanced/) holds the second
+half: a harness for deep research, where the steps are decided as the run goes.
+
+| Mode | Use case | Start here |
+|---|---|---|
+| **Deep research**: the steps are decided as it runs | Write a survey paper with references, every one a page the harness read | [`advanced/deep_research/`](advanced/deep_research/) |
+
+It has a notebook and an appbook. From the root of the repository, with Docker running
+and `ANTHROPIC_API_KEY` and `TAVILY_API_KEY` set:
+
+```bash
+python3.12 -m venv part_3/advanced/.venv
+part_3/advanced/.venv/bin/python -m pip install -r part_3/advanced/requirements.txt
+
+part_3/advanced/deep_research/appbook/run.sh          # the appbook, on http://127.0.0.1:8041
+part_3/advanced/.venv/bin/python -m jupyter lab \
+  part_3/advanced/deep_research/notebook/advanced_survey_paper_harness.ipynb   # the notebook
+```
+
+The first start creates the database container, which takes a few minutes. The notebook
+has the outputs of a full run saved in it, so it can be read without running anything.
+The [advanced guide](advanced/README.md) has the rest.
+
+## The practice workspace
+
+Nothing in the assistant needs a Google, Microsoft or Notion account. Both run on a
 **practice workspace**: one real mailbox from
 [`corbt/enron-emails`](https://huggingface.co/datasets/corbt/enron-emails),
 real prompt-injection emails from
@@ -113,7 +140,8 @@ key in a notebook.
 | [`custom_harness/notebook/`](custom_harness/notebook/) | The notebook, its diagrams in `img/` and its requirements |
 | [`custom_harness/appbook/`](custom_harness/appbook/) | The appbook: backend, frontend and tests |
 | [`harness_done_for_you/`](harness_done_for_you/) | The MemoRizz notebook, its workspace gateway and tests |
-| [`_shared/`](_shared/) | The practice data, the rules that derive a working week from it, the connectors and the MCP gateway the appbook starts |
+| [`advanced/`](advanced/) | The advanced track: the deep-research harness that writes a survey paper, with its notebook, appbook, scripts and tests |
+| [`_shared/`](_shared/) | `oracle_database.py`, the database setup the advanced notebook and appbook import: start the container, create the account, load the embedding model, read and write. Also the practice data, the rules that derive a working week from it, the connectors and the MCP gateway the appbook starts |
 | [`tools/diagrams/`](tools/diagrams/) | `render.py`, which draws the notebook's Mermaid diagrams as images |
 
 Part 3 shares a database container with Part 2 and keeps its own schema, so

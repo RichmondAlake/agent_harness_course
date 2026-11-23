@@ -28,7 +28,7 @@ more.
 | Custom harness, notebook | The harness built from first principles on Oracle AI Database, Oracle Agent Memory, LangGraph, Claude and a System One model | [`custom_harness/notebook/`](custom_harness/notebook/) |
 | Custom harness, appbook | The same assistant as a running application, with a chapter for each building block | [`custom_harness/appbook/`](custom_harness/appbook/) |
 | Harness done for you | The same jobs on MemoRizz, pi, Hermes and DeepSeek | [`harness_done_for_you/`](harness_done_for_you/) |
-| Advanced | Three modes, three use cases: a trip-booking **workflow**, a survey-writing **deep-research** harness, and a **meta-harness** read from MemoRizz's source | [`advanced/`](advanced/) |
+| Advanced | Two modes, two use cases: a survey-writing **deep-research** harness, and a **meta-harness** read from MemoRizz's source | [`advanced/`](advanced/) |
 
 ## No sign-in is needed
 
@@ -86,7 +86,7 @@ Never put a key in a notebook.
 | [`custom_harness/appbook/`](custom_harness/appbook/) | The interactive appbook |
 | [`harness_done_for_you/`](harness_done_for_you/) | Two notebooks, a command line runner and their tests |
 | [`_shared/`](_shared/) | The practice data, the rules that derive a working week from it, the connectors and the MCP gateway |
-| [`advanced/`](advanced/) | The workflow, deep-research and meta-harness lessons, with two appbooks |
+| [`advanced/`](advanced/) | The deep-research and meta-harness lessons, with one appbook |
 | [`tests/`](tests/) | Rule-based tests of the shared policy |
 | [`tools/`](tools/) | `notebook_diagrams.py`, which embeds Mermaid diagrams as images |
 

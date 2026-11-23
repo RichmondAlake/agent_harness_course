@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Launch the trip workflow appbook.
+# Launch the survey paper appbook.
 set -euo pipefail
 cd "$(dirname "$0")"
 PYTHON="${PYTHON:-}"

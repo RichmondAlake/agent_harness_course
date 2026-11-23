@@ -1,0 +1,9 @@
+node_modules/
+
+# Papers written by the deep-research harness. One sample is kept in deep_research/samples/
+deep_research/output/
+deep_research/notebook/output/
+
+__pycache__/
+.pytest_cache/
+.venv/

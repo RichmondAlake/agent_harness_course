@@ -1,8 +1,0 @@
-flowchart LR
-  Q[closed question + data] --> J[Jev]
-  J --> P[probability]
-  P --> T{harness threshold}
-  T -->|yes| A[the decision]
-  T -->|no| B[the other decision]
-  J -. off .-> R[rule fallback]
-  J --> L[(TRIP_DECISIONS)]

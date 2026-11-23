@@ -1,6 +1,0 @@
-flowchart LR
-  Q[query] --> T[Tavily search] --> R[numbered results]
-  R --> E[(TRIP_EVIDENCE · every page, with its scores)]
-  R --> J[Jev · about this trip? an order?] --> K[pages worth reading]
-  K --> C[Claude · offers schema] --> O[offers, each naming a page]
-  O --> F[(TRIP_OFFERS)]
